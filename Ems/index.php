@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Eventbrite Replica Detailed</title>
+  <title>Prasangam</title>
 
   <!-- Bootstrap CSS -->
   <link
