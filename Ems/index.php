@@ -1,9 +1,25 @@
+<?php
+session_start();
+$welcomeMessage = "";
+
+if (isset($_SESSION["show_welcome"]) && $_SESSION["show_welcome"] === true) {
+    $name = htmlspecialchars($_SESSION["first_name"]);
+    $welcomeMessage = "Welcome, $name!";
+    
+    // Show only once
+    $_SESSION["show_welcome"] = false;
+}
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en" >
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Eventbrite Replica Detailed</title>
+  <title>PRASANGAM</title>
 
   <!-- Bootstrap CSS -->
   <link
@@ -19,6 +35,12 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <?php if (!empty($welcomeMessage)): ?>
+  <div class="alert alert-success text-center mt-3" role="alert">
+    <?= $welcomeMessage ?>
+  </div>
+<?php endif; ?>
+
 
 <header>
 <div class="logo">
@@ -81,7 +103,7 @@
     <div
       class="carousel-item"
       style="
-        background-image: url('https://images.unsplash.com/photo-1525610553991-2bede1a236e2?auto=format&fit=crop&w=1400&q=80');
+        background-image: url('./img/singing.jpg');
       "
     >
       <div class="hero-text">
