@@ -1,44 +1,43 @@
 <?php
 session_start();
 
-// 1. Connect to the database
+// 1. Connect to MySQL
 $conn = new mysqli("localhost", "root", "", "event_management");
-
-// 2. Check DB connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// 3. Handle login form POST data
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST["email"];
-    $password = $_POST["password"];
+// 2. Get POST data
+$email = $_POST["email"];
+$password = $_POST["password"];
 
-    // 4. Check if user exists
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+// 3. Query user by email
+$stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    // 5. If user found
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
+// 4. Check if user found
+if ($result->num_rows === 1) {
+    $user = $result->fetch_assoc();
 
-        // 6. Verify password
-        if (password_verify($password, $user["password"])) {
-            $_SESSION["user_id"] = $user["id"];
-            $_SESSION["full_name"] = $user["full_name"];
+    // 5. Verify password
+    if (password_verify($password, $user["password"])) {
+        // 6. Store user info in session
+        $_SESSION["user_id"] = $user["id"];
+        $_SESSION["first_name"] = $user["first_name"];
+        $_SESSION["last_name"] = $user["last_name"];
+        $_SESSION["show_welcome"] = true; // ✅ Flag to show alert once
 
-            // 7. Redirect on success
-            echo "<script>alert('Login Successful'); window.location.href='dashboard.php';</script>";
-        } else {
-            echo "<script>alert('Incorrect password'); window.history.back();</script>";
-        }
+        // ✅ Safe redirect with no JS
+        header("Location: index.php");
+        exit;
     } else {
-        echo "<script>alert('Email not found'); window.history.back();</script>";
+        echo "<script>alert('Incorrect password'); window.history.back();</script>";
     }
-
-    $stmt->close();
-    $conn->close();
+} else {
+    echo "<script>alert('Email not found'); window.history.back();</script>";
 }
+
+$conn->close();
 ?>
